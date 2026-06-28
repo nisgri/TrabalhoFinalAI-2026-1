@@ -1,0 +1,14 @@
+com/ecommerce/service/PedidoService.class
+com/ecommerce/dto/AnaliseRequest$AnaliseRequestBuilder.class
+com/ecommerce/dto/PedidoRequest.class
+com/ecommerce/dto/N8nWebhookPayload$N8nWebhookPayloadBuilder.class
+com/ecommerce/repository/PedidoRepository.class
+com/ecommerce/entity/Pedido$PedidoBuilder.class
+com/ecommerce/controller/PedidoController.class
+com/ecommerce/EcommerceApplication.class
+com/ecommerce/entity/Pedido.class
+com/ecommerce/dto/N8nWebhookPayload.class
+com/ecommerce/dto/PedidoRequest$PedidoRequestBuilder.class
+com/ecommerce/dto/AnaliseRequest.class
+com/ecommerce/exception/GlobalExceptionHandler.class
+com/ecommerce/config/WebConfig.class
