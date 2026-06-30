@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { criarPedido } from '../api/pedidos';
 
 const PRODUTOS_DISPONIVEIS = [
-  { id: 'notebook', nome: 'Notebook', preco: 4500 },
-  { id: 'mouse', nome: 'Mouse Gamer', preco: 250 },
-  { id: 'teclado', nome: 'Teclado Mecânico', preco: 420 },
-  { id: 'monitor', nome: 'Monitor 27"', preco: 1800 },
-  { id: 'headset', nome: 'Headset Gamer', preco: 380 },
-  { id: 'ssd', nome: 'SSD 1TB', preco: 520 },
+  { id: 'notebook', nome: 'Notebook', preco: 4500, emoji: '💻' },
+  { id: 'mouse', nome: 'Mouse Gamer', preco: 250, emoji: '🖱️' },
+  { id: 'teclado', nome: 'Teclado Mecânico', preco: 420, emoji: '⌨️' },
+  { id: 'monitor', nome: 'Monitor 27"', preco: 1800, emoji: '🖥️' },
+  { id: 'headset', nome: 'Headset Gamer', preco: 380, emoji: '🎧' },
+  { id: 'ssd', nome: 'SSD 1TB', preco: 520, emoji: '💾' },
 ];
 
 export default function OrderForm({ onPedidoCriado }) {
@@ -55,6 +55,9 @@ export default function OrderForm({ onPedidoCriado }) {
       });
 
       onPedidoCriado(pedido);
+      setCliente('');
+      setCidade('');
+      setProdutosSelecionados([]);
     } catch (error) {
       const mensagem =
         error.response?.data?.erros
@@ -67,85 +70,124 @@ export default function OrderForm({ onPedidoCriado }) {
   }
 
   return (
-    <section aria-labelledby="formulario-pedido-titulo">
+    <section aria-labelledby="formulario-pedido-titulo" className="card p-6 sm:p-8">
       <header className="mb-6">
-        <h2 id="formulario-pedido-titulo" className="text-2xl font-semibold text-slate-900">
+        <h2 id="formulario-pedido-titulo" className="text-xl font-bold text-slate-900">
           Novo Pedido
         </h2>
-        <p className="mt-1 text-slate-600">
+        <p className="mt-1 text-sm text-slate-500">
           Preencha seus dados e selecione os produtos desejados.
         </p>
       </header>
 
-      {/* A11y: formulário semântico com labels associados via htmlFor */}
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-        <div>
-          <label htmlFor="cliente" className="mb-1 block text-sm font-medium text-slate-800">
-            Nome do cliente
-          </label>
-          <input
-            id="cliente"
-            name="cliente"
-            type="text"
-            required
-            autoComplete="name"
-            value={cliente}
-            onChange={(event) => setCliente(event.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm"
-            aria-required="true"
-          />
-        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="cliente" className="mb-1.5 block text-sm font-semibold text-slate-700">
+              Nome do cliente
+            </label>
+            <input
+              id="cliente"
+              name="cliente"
+              type="text"
+              required
+              autoComplete="name"
+              placeholder="Ex: Maria Silva"
+              value={cliente}
+              onChange={(event) => setCliente(event.target.value)}
+              className="input-field"
+              aria-required="true"
+            />
+          </div>
 
-        <div>
-          <label htmlFor="cidade" className="mb-1 block text-sm font-medium text-slate-800">
-            Cidade
-          </label>
-          <input
-            id="cidade"
-            name="cidade"
-            type="text"
-            required
-            autoComplete="address-level2"
-            value={cidade}
-            onChange={(event) => setCidade(event.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm"
-            aria-required="true"
-          />
+          <div>
+            <label htmlFor="cidade" className="mb-1.5 block text-sm font-semibold text-slate-700">
+              Cidade
+            </label>
+            <input
+              id="cidade"
+              name="cidade"
+              type="text"
+              required
+              autoComplete="address-level2"
+              placeholder="Ex: Petrópolis"
+              value={cidade}
+              onChange={(event) => setCidade(event.target.value)}
+              className="input-field"
+              aria-required="true"
+            />
+          </div>
         </div>
 
         <fieldset>
-          <legend className="mb-3 text-sm font-medium text-slate-800">Produtos</legend>
+          <legend className="mb-3 text-sm font-semibold text-slate-700">
+            Produtos disponíveis
+          </legend>
           <div className="grid gap-3 sm:grid-cols-2">
-            {PRODUTOS_DISPONIVEIS.map((produto) => (
-              <label
-                key={produto.id}
-                htmlFor={`produto-${produto.id}`}
-                className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm hover:border-blue-400"
-              >
-                <input
-                  id={`produto-${produto.id}`}
-                  type="checkbox"
-                  checked={produtosSelecionados.includes(produto.id)}
-                  onChange={() => alternarProduto(produto.id)}
-                  className="h-4 w-4 rounded border-slate-300 text-blue-600"
-                />
-                <span className="text-sm text-slate-800">
-                  {produto.nome}{' '}
-                  <span className="text-slate-500">
-                    (R$ {produto.preco.toLocaleString('pt-BR')})
+            {PRODUTOS_DISPONIVEIS.map((produto) => {
+              const selecionado = produtosSelecionados.includes(produto.id);
+              return (
+                <label
+                  key={produto.id}
+                  htmlFor={`produto-${produto.id}`}
+                  className={`produto-card ${selecionado ? 'selecionado' : ''}`}
+                >
+                  <input
+                    id={`produto-${produto.id}`}
+                    type="checkbox"
+                    checked={selecionado}
+                    onChange={() => alternarProduto(produto.id)}
+                    className="sr-only"
+                  />
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xl
+                      ${selecionado ? 'bg-blue-100' : 'bg-slate-100'}`}
+                    aria-hidden="true"
+                  >
+                    {produto.emoji}
                   </span>
-                </span>
-              </label>
-            ))}
+                  <span className="flex-1 min-w-0">
+                    <span className={`block text-sm font-semibold ${selecionado ? 'text-blue-800' : 'text-slate-800'}`}>
+                      {produto.nome}
+                    </span>
+                    <span className="block text-xs text-slate-500">
+                      R$ {produto.preco.toLocaleString('pt-BR')}
+                    </span>
+                  </span>
+                  <span
+                    className={`ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2
+                      ${selecionado
+                        ? 'border-blue-500 bg-blue-500 text-white'
+                        : 'border-slate-300 bg-white'}`}
+                    aria-hidden="true"
+                  >
+                    {selecionado && (
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                </label>
+              );
+            })}
           </div>
         </fieldset>
 
-        <p className="text-base font-semibold text-slate-900" aria-live="polite">
-          Valor total: R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-        </p>
+        <div
+          className="flex items-center justify-between rounded-xl bg-slate-50 border-2 border-slate-200 px-5 py-4"
+          aria-live="polite"
+        >
+          <span className="text-sm font-medium text-slate-600">
+            {produtosSelecionados.length} produto{produtosSelecionados.length !== 1 ? 's' : ''} selecionado{produtosSelecionados.length !== 1 ? 's' : ''}
+          </span>
+          <span className="text-xl font-bold text-slate-900">
+            R$ {valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </span>
+        </div>
 
         {erro && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+          <p role="alert" className="flex items-center gap-2 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm font-medium text-red-700">
+            <span aria-hidden="true">⚠️</span>
             {erro}
           </p>
         )}
@@ -154,9 +196,16 @@ export default function OrderForm({ onPedidoCriado }) {
           type="submit"
           disabled={enviando}
           aria-busy={enviando}
-          className="rounded-lg bg-blue-700 px-4 py-2 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-blue-400"
+          className="btn-primary"
         >
-          {enviando ? 'Enviando pedido...' : 'Enviar pedido'}
+          {enviando ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="spinner" aria-hidden="true" />
+              Enviando pedido...
+            </span>
+          ) : (
+            'Finalizar Pedido'
+          )}
         </button>
       </form>
     </section>
