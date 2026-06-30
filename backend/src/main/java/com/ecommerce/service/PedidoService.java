@@ -16,6 +16,8 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.ecommerce.exception.N8nIntegrationException;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -89,6 +91,7 @@ public class PedidoService {
             log.info("Pedido {} enviado ao webhook n8n", pedido.getId());
         } catch (RestClientException ex) {
             log.error("Falha ao enviar pedido {} para o n8n: {}", pedido.getId(), ex.getMessage());
+            throw new N8nIntegrationException("Não foi possível processar o pedido no momento. Tente novamente mais tarde.");
         }
     }
 }

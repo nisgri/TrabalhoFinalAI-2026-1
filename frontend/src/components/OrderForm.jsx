@@ -80,9 +80,10 @@ export default function OrderForm({ onPedidoCriado }) {
       setProdutosSelecionados([]);
     } catch (error) {
       const mensagem =
-        error.response?.data?.erros
+        error.response?.data?.mensagem ||
+        (error.response?.data?.erros
           ? Object.values(error.response.data.erros).join(' ')
-          : 'Não foi possível enviar o pedido. Tente novamente.';
+          : 'Não foi possível enviar o pedido. Tente novamente.');
       setErro(mensagem);
     } finally {
       setEnviando(false);
