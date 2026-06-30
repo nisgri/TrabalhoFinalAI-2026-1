@@ -36,6 +36,10 @@
     @apply border-blue-500 bg-blue-50 shadow-md;
   }
 
+  .produto-card:has(input:focus-visible) {
+    @apply border-blue-500 ring-2 ring-blue-200;
+  }
+
   .input-field {
     @apply w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-slate-900
            shadow-sm placeholder:text-slate-400

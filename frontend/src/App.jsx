@@ -7,6 +7,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen">
+      <a
+        href="#conteudo-principal"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-blue-700 focus:shadow-lg"
+      >
+        Pular para o conteúdo
+      </a>
+
       <header className="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 shadow-lg">
         <div className="mx-auto max-w-3xl px-4 py-8">
           <div className="flex items-center gap-3">
@@ -28,7 +35,7 @@ export default function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-8 space-y-8">
+      <main id="conteudo-principal" className="mx-auto max-w-3xl px-4 py-8 space-y-8">
         <OrderForm onPedidoCriado={setPedidoAtual} />
         <OrderResult pedidoInicial={pedidoAtual} />
       </main>

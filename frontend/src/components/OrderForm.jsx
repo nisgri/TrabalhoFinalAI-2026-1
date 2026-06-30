@@ -16,6 +16,7 @@ export default function OrderForm({ onPedidoCriado }) {
   const [produtosSelecionados, setProdutosSelecionados] = useState([]);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroCampo, setErroCampo] = useState('');
 
   const valorTotal = produtosSelecionados.reduce((total, id) => {
     const produto = PRODUTOS_DISPONIVEIS.find((item) => item.id === id);
@@ -23,6 +24,11 @@ export default function OrderForm({ onPedidoCriado }) {
   }, 0);
 
   function alternarProduto(produtoId) {
+    if (erroCampo === 'produtos') {
+      setErroCampo('');
+      setErro('');
+    }
+
     setProdutosSelecionados((atual) =>
       atual.includes(produtoId)
         ? atual.filter((id) => id !== produtoId)
@@ -33,9 +39,23 @@ export default function OrderForm({ onPedidoCriado }) {
   async function handleSubmit(event) {
     event.preventDefault();
     setErro('');
+    setErroCampo('');
+
+    if (!cliente.trim()) {
+      setErro('Informe seu nome para continuar.');
+      setErroCampo('cliente');
+      return;
+    }
+
+    if (!cidade.trim()) {
+      setErro('Informe sua cidade para continuar.');
+      setErroCampo('cidade');
+      return;
+    }
 
     if (produtosSelecionados.length === 0) {
       setErro('Selecione ao menos um produto.');
+      setErroCampo('produtos');
       return;
     }
 
@@ -94,10 +114,21 @@ export default function OrderForm({ onPedidoCriado }) {
               autoComplete="name"
               placeholder="Ex: Maria Silva"
               value={cliente}
-              onChange={(event) => setCliente(event.target.value)}
+              onChange={(event) => {
+                setCliente(event.target.value);
+                if (erroCampo === 'cliente') {
+                  setErroCampo('');
+                  setErro('');
+                }
+              }}
               className="input-field"
               aria-required="true"
+              aria-invalid={erroCampo === 'cliente'}
+              aria-describedby="cliente-ajuda"
             />
+            <p id="cliente-ajuda" className="mt-1 text-xs text-slate-500">
+              Digite seu nome completo para identificação do pedido.
+            </p>
           </div>
 
           <div>
@@ -112,17 +143,31 @@ export default function OrderForm({ onPedidoCriado }) {
               autoComplete="address-level2"
               placeholder="Ex: Petrópolis"
               value={cidade}
-              onChange={(event) => setCidade(event.target.value)}
+              onChange={(event) => {
+                setCidade(event.target.value);
+                if (erroCampo === 'cidade') {
+                  setErroCampo('');
+                  setErro('');
+                }
+              }}
               className="input-field"
               aria-required="true"
+              aria-invalid={erroCampo === 'cidade'}
+              aria-describedby="cidade-ajuda"
             />
+            <p id="cidade-ajuda" className="mt-1 text-xs text-slate-500">
+              Informe a cidade onde o pedido deve ser entregue.
+            </p>
           </div>
         </div>
 
-        <fieldset>
+        <fieldset aria-describedby="produtos-ajuda">
           <legend className="mb-3 text-sm font-semibold text-slate-700">
             Produtos disponíveis
           </legend>
+          <p id="produtos-ajuda" className="sr-only">
+            Selecione um ou mais produtos. Use a tecla Espaço para alternar a seleção.
+          </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {PRODUTOS_DISPONIVEIS.map((produto) => {
               const selecionado = produtosSelecionados.includes(produto.id);
@@ -176,6 +221,7 @@ export default function OrderForm({ onPedidoCriado }) {
         <div
           className="flex items-center justify-between rounded-xl bg-slate-50 border-2 border-slate-200 px-5 py-4"
           aria-live="polite"
+          aria-atomic="true"
         >
           <span className="text-sm font-medium text-slate-600">
             {produtosSelecionados.length} produto{produtosSelecionados.length !== 1 ? 's' : ''} selecionado{produtosSelecionados.length !== 1 ? 's' : ''}
