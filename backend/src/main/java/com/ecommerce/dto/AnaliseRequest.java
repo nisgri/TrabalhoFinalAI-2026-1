@@ -1,0 +1,26 @@
+package com.ecommerce.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AnaliseRequest {
+
+    @NotBlank(message = "O perfil do cliente é obrigatório")
+    private String perfilCliente;
+
+    private String recomendacoes;
+
+    private String cupomDesconto;
+
+    @NotBlank(message = "A mensagem da IA é obrigatória")
+    private String mensagemIA;
+}
